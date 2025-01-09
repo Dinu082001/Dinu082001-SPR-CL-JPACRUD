@@ -20,14 +20,14 @@ public class StoreService {
      * @return the persisted store
      */
     public Store persistStore(Store store){
-        return null;
+        return storeRepository.save(store);
     }
     /**
      * TODO: get all store entities
      * @return all store entities
      */
     public List<Store> getAllStores(){
-        return null;
+        return storeRepository.findAll();
     }
     /**
      * TODO: given an id of a store, return the store.
@@ -36,21 +36,28 @@ public class StoreService {
      * @return a store entity
      */
     public Store getStoreById(long id){
-        return null;
+        return storeRepository.findById(id).orElse(null);
     }
     /**
      * TODO: given an id of an existing store, delete the store
      */
     public void deleteStore(long id){
-//        code here
+        //        code here
+        storeRepository.deleteById(id);
     }
     /**
      * TODO: given an id and some replacement data for a store, overwrite the data of an existing store,
      * and return the updated store.
      * @return the updated store entity
      */
-    public Store updateStore(long id, Store replacement){
-        return null;
+    public Store updateStore(long id, Store replacement) {
+        return storeRepository.findById(id)
+                .map(existingStore -> {
+                    existingStore.setName(replacement.getName());
+                    existingStore.setAddress(replacement.getAddress());
+                    return storeRepository.save(existingStore);
+                })
+                .orElseThrow(() -> new RuntimeException("Store with id " + id + " not found"));
     }
 
 }
